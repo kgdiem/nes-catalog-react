@@ -1,8 +1,17 @@
-const baseUrl =
-  "https://api.rawg.io/api/games?dates=1985-01-01,1994-12-31&platform=49";
+const baseUrl = "https://api.rawg.io/api/games";
+
+const baseSearchUrl = `${baseUrl}?dates=1985-01-01,1994-12-31&platform=49`;
+
+const getGame = async (id: string | number) => {
+  const res = await fetch(`${baseUrl}/${id}`);
+
+  const json = await res.json();
+
+  return json;
+};
 
 const getList = async (query?: string, page?: string | number) => {
-  let _url = baseUrl;
+  let _url = baseSearchUrl;
 
   if (query) {
     _url += `&search=${query}`;
@@ -20,5 +29,6 @@ const getList = async (query?: string, page?: string | number) => {
 };
 
 export const API = {
+  getGame,
   getList
 };
