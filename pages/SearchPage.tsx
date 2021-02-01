@@ -1,43 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import { GameList, Header, Pagination, SearchBar } from "../components";
-import { API } from "../lib";
 
-export const SearchPage = () => {
-  const [list, setList] = useState<any>(null);
-  const [page, setPage] = useState<number>(1);
-  const [query, setQuery] = useState<string>('');
-  
-  const doSearch = (query?, page?) => API.getList(query, page).then(list => setList(list))
+export interface SearchPagePropTypes {
+  doSearch: (query?: string, pageNum?: string | number) => void;
+  list: any;
+  query: string;
+  page: string | number;
+}
 
-  useEffect(() => {
-    doSearch();
-  }, []);
-
-  const changePage = (pageNum) => {
-    setPage(pageNum);
-
-    doSearch(query, pageNum);
-  }
-
-  const search = query => {
-    setPage(1);
-    setQuery(query);
-
-    doSearch(query, 1);
-  }
-
+export const SearchPage = ({doSearch, list, query, page}) => {
   return (
     <div className="p-10">
       <Header />
 
-      <SearchBar onChange={search} />
+      <SearchBar onChange={query => doSearch(query, 1)} />
 
       <GameList list={list} />
 
       <Pagination 
         current={page} 
-        click={changePage} 
+        click={pageNum => doSearch(query, pageNum)} 
         pageSize={20} 
         total={list?.count}
       />
