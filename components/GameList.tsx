@@ -8,7 +8,7 @@ export interface GameListPropTypes {
 export const GameList = ({ list }: GameListPropTypes) => (
   <div>
     {list?.results?.map(result => (
-      <div key={result.id} className="mb-20">
+      <div key={result.id} className="mb-20" tabIndex={0}>
         <GameListItem result={result}></GameListItem>
       </div>
     ))}
