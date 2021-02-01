@@ -7,7 +7,7 @@ export const SearchPage = () => {
   const [list, setList] = useState<any>(null);
   const [page, setPage] = useState<number>(1);
   const [query, setQuery] = useState<string>('');
-
+  
   const doSearch = (query?, page?) => API.getList(query, page).then(list => setList(list))
 
   useEffect(() => {
