@@ -1,17 +1,22 @@
 import React from "react";
 
 interface PaginationButtonPropTypes {
-  active: boolean;
+  active?: boolean;
   text: string | number;
-  onClick: () => void;
+  value: string | number;
+  onClick: (val: string | number) => void;
 }
 
 const PaginationButton = ({
   active,
   text,
+  value,
   onClick
 }: PaginationButtonPropTypes) => (
-  <button className={`nes-btn ${active ? "is-primary" : ""}`} onClick={onClick}>
+  <button
+    className={`nes-btn pagination-btn ${active ? "is-primary" : ""}`}
+    onClick={() => onClick(value)}
+  >
     {text}
   </button>
 );
@@ -31,6 +36,10 @@ export const Pagination = ({
   pageSize,
   total
 }: PaginationPropTypes) => {
+  if (!total || total === 1) {
+    return <div />;
+  }
+
   const totalButtons = Math.ceil(total / pageSize);
   const buttons = [];
 
@@ -42,29 +51,46 @@ export const Pagination = ({
           text={i}
           onClick={() => click(i)}
           key={i}
+          value={i}
         />
       );
     }
   } else {
     const middleButtons = numberOfButtons - 2;
-    let currentPage = current === 1 ? 2 : current;
+    let currentPage =
+      current === 1
+        ? 2
+        : current > totalButtons - middleButtons
+        ? totalButtons - middleButtons
+        : current;
+
+    if (current > 2) {
+      const val = current - 1;
+      buttons.push(
+        <PaginationButton text="<" onClick={click} key={"back"} value={val} />
+      );
+    }
 
     buttons.push(
       <PaginationButton
         active={current === 1}
         text={1}
-        onClick={() => click(1)}
+        onClick={click}
         key={1}
+        value={1}
       />
     );
 
     for (let i = 0; i < middleButtons; i++) {
-      <PaginationButton
-        active={currentPage === current}
-        text={currentPage}
-        onClick={() => click(currentPage)}
-        key={currentPage}
-      />;
+      buttons.push(
+        <PaginationButton
+          active={currentPage === current}
+          text={currentPage}
+          value={currentPage}
+          onClick={click}
+          key={currentPage}
+        />
+      );
 
       currentPage += 1;
     }
@@ -73,11 +99,24 @@ export const Pagination = ({
       <PaginationButton
         active={current === totalButtons}
         text={totalButtons}
-        onClick={() => click(totalButtons)}
+        onClick={click}
         key={totalButtons}
+        value={totalButtons}
       />
     );
+
+    if (current < totalButtons) {
+      const val = current + 1;
+      buttons.push(
+        <PaginationButton
+          text=">"
+          onClick={click}
+          key={"forward"}
+          value={val}
+        />
+      );
+    }
   }
 
-  return <div>{buttons}</div>;
+  return <div className="text-center">{buttons}</div>;
 };

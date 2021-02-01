@@ -33,3 +33,7 @@
   max-width: 100%;
   width: auto;
 }
+
+.pagination-btn:not(:last-of-type) {
+  margin-right: 5px;
+}

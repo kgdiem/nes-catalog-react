@@ -9,12 +9,26 @@ import { API } from "./lib";
 const App = () => {
   const [list, setList] = useState<any>(null);
   const [page, setPage] = useState<number>(1);
+  const [query, setQuery] = useState<string>('');
+
+  const doSearch = (query?, page?) => API.getList(query, page).then(list => setList(list))
 
   useEffect(() => {
-    API.getList().then(list => setList(list));
+    doSearch();
   }, []);
 
-  const search = query => API.getList(query).then(list => setList(list));
+  const changePage = (pageNum) => {
+    setPage(pageNum);
+
+    doSearch(query, pageNum);
+  }
+
+  const search = query => {
+    setPage(1);
+    setQuery(query);
+
+    doSearch(query, 1);
+  }
 
   return (
     <div className="p-10">
@@ -26,7 +40,7 @@ const App = () => {
 
       <Pagination 
         current={page} 
-        click={(page) => setPage(page)} 
+        click={changePage} 
         pageSize={20} 
         total={list?.count}
       />
